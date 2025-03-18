@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+// import { useDispatch, useSelector } from "react-redux";
 
 export default function TodoMain() {
   const [todos, setTodos] = useState([
@@ -12,17 +13,32 @@ export default function TodoMain() {
     // },
   ]);
 
+  // const todos = useSelector((state) => state.todo.todos);
+  console.log("todos", todos);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [currentEditIndex, seCurrentEditIndex] = useState(null);
 
+
+  const localItems = localStorage.getItem('todos')
+  const todosArray = JSON.parse(localItems);
+
+console.log("hhh",todosArray);
+  // const dispatch = useDispatch();
   useEffect(() => {
+    // if()
+   
+
+    if (todosArray?.length > 0) {
+      setTodos(todosArray)
+    }
     setTitle("");
     setDescription("");
-  }, [todos]);
+  }, []);
 
   function addToTodo() {
+    localStorage.setItem("todos", JSON.stringify([...todos, { title, description }]));
     setTodos((prev) => [
       ...prev,
       {
@@ -30,7 +46,10 @@ export default function TodoMain() {
         description,
       },
     ]);
+    setTitle("")
+    setDescription("")
   }
+
 
   function onEdit(idx) {
     console.log(idx);
@@ -43,9 +62,23 @@ export default function TodoMain() {
   function editTodo() {
     console.log("is Editing");
     console.log(title, description, currentEditIndex);
+    if (currentEditIndex !== null) {
+      const updatedTodos = todos.map((todo, index) =>
+        index === currentEditIndex ? { title, description } : todo
+      );
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      setTodos(updatedTodos);
+      setIsEdit(false);
+      seCurrentEditIndex(null);
+      setTitle("")
+      setDescription("")
+    }
+  }
 
-    // console.log(updatedTodo);
-    setTodos(updatedTodo);
+  function deleteTodo(idx) {
+    const updatedTodos = [...todos.slice(0, idx), ...todos.slice(idx + 1)];
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    setTodos(updatedTodos);
   }
 
   return (
@@ -76,7 +109,7 @@ export default function TodoMain() {
             <div key={index} className="todo-item-body">
               <div className="todo-item-head">
                 <span onClick={() => onEdit(index)}>Edit</span>
-                <span>X</span>
+                <span onClick={() => deleteTodo(index)}>X</span>
               </div>
               <span>{todoItem?.title}</span>
               <p>{todoItem?.description}</p>
