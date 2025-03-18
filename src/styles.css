@@ -1,0 +1,28 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.todo-main {
+  /* border: 1px solid red; */
+}
+
+.todo-tasks-lists {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10%;
+}
+.todo-item-head {
+  display: flex;
+  justify-content: flex-end;
+  border: 1px solid green;
+  margin-bottom: 2%;
+}
+.todo-item-head span {
+  padding: 1rem;
+  cursor: pointer;
+}
+.todo-item-body {
+  border: 1px solid green;
+}
